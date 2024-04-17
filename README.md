@@ -1,6 +1,6 @@
 <div align="center">
 <img src="https://github.com/d1pankarmedhi/picachain/assets/136924835/3a299c21-6590-4ee1-a3c1-73a92653f21e" height=150></img>
-<h3>⚡️ Build quick ML pipelines for images</h3>
+<h3>⚡️ Build quick LLM pipelines for image specific tasks</h3>
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
