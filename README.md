@@ -5,6 +5,9 @@
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
 [![PyPi license](https://badgen.net/pypi/license/pip/)]() [![PyPI version fury.io](https://badge.fury.io/py/picachain.svg)](https://pypi.python.org/pypi/picachain/)
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/picachain.svg?style=social&label=Follow%20%40Picachain)](https://twitter.com/picachain)
+
+
 
 </div>
 
