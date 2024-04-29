@@ -85,8 +85,8 @@ overrides==7.7.0
 packaging==24.0
 parso==0.8.4
 pexpect==4.9.0
--e git+https://github.com/pica-labs/picachain.git@c84b1a1c42cead7cf5fd296a325ea082a693a1a5#egg=picachain
-Pillow==9.4.0
+-e git+https://github.com/pica-labs/picachain.git@9793838686ab2a564fedbd23e43ff34b46f4957f#egg=picachain
+pillow==10.3.0
 pinecone-client==3.2.1
 platformdirs==4.2.1
 posthog==3.5.0
