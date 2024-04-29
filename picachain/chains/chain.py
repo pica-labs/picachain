@@ -2,4 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class Chain(ABC):
-    pass
+    @abstractmethod
+    def run(self, *args, **kwargs):
+        """execute chain"""
