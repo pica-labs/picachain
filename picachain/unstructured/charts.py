@@ -19,8 +19,7 @@ class ChartParser:
         if isinstance(image, Path):
             image = Image.open(image)
 
-        deplot = Deplot()
-        result = deplot.generate(image)
+        result = Deplot.generate(image)
 
         return Chart(
             content=result,
