@@ -3,7 +3,7 @@ from typing import Union
 
 from PIL import Image
 
-from picachain.chains.chain import Chain
+from picachain.chains.base import Chain
 from picachain.models.openai.openai import OpenAI_Model
 from picachain.unstructured.charts import Chart, ChartParser
 

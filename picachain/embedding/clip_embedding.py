@@ -3,7 +3,7 @@ from typing import List
 import numpy as np
 from PIL import Image
 
-from picachain.embedding.embedding import Embedding
+from picachain.embedding.base import Embedding
 
 
 class ClipEmbedding(Embedding):
@@ -14,8 +14,7 @@ class ClipEmbedding(Embedding):
             from transformers import CLIPModel, CLIPProcessor, CLIPTokenizer
         except ImportError as e:
             raise ImportError(
-                "Could not import torch, transformers."
-                "Please install it with `pip install torch transformers`"
+                "Could not import torch, transformers. Please install it with `pip install torch transformers`"
             ) from e
 
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -28,7 +27,6 @@ class ClipEmbedding(Embedding):
     def save(self, path: str):
         self.model.save_pretrained(path)
         self.processor.save_pretrained(path)
-        self.tokenizer.save_pretrained(path)
 
     def encode_image(self, image: Image.Image):
         raise NotImplementedError
