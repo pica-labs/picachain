@@ -40,8 +40,8 @@ Check out a demo [![Open In Colab](https://colab.research.google.com/assets/cola
 embedding = ClipEmbedding()
 datastore = ChromaStore("test-collection")
 retriever = ImageRetriever(datastore, embedding, images)
-image_search = ImageSearch(retriever, embedding, img)
-result = image_search.search_relevant_images(top_k=3) # get top 3 relevant images
+img_chain = ImageSearchChain.from_image(retriever, embedding, img)
+result = img_chain.similar_images(top_k=3)
 
 ## Output 
 # [(img, score), (img, score)]
@@ -53,6 +53,22 @@ Create a conversation chain and ask questions from chart/graph images.
 ![image](https://github.com/pica-labs/picachain/assets/136924835/a30c6969-98ee-43ac-beed-5425487aa95b)
 *Fig: Conversation chain for Q&A with charts/graphs*
 
+
+### Build Chart Conversation Chain
+
+```python
+from dotenv import load_dotenv
+from picachain.chains.unstructured.charts import ChartConversationChain
+from picachain.models.openai.openai import OpenAI_Model
+load_dotenv()
+```
+```pyhton
+chart_conv_chain = ChartConversationChain(
+    chart="/home/home/dev/picachain/data/chart1.png", llm=OpenAI_Model()
+)
+response = chart_conv_chain.run(query="What do I eat?")
+print(response)
+```
 
 ## 💡 Contributing
 As an open-source project, we are open to all kinds of contribution, be it through code, documentation, issues, bugs, or even feature suggestions. 
