@@ -32,22 +32,8 @@ pip install picachain
 Use **ChromaDB** or **Pinecone** for storage with **CLIP** embeddings.
 Check out a demo [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1FbruIGMBrD7VW5jCHStHzGlsEuigbS0q?usp=sharing)
 
-
-```python
-from PIL import Image
-import matplotlib.pyplot as plt
-
-# import from picachain
-from picachain.chains.image.search import ImageSearchChain
-from picachain.datastore import ChromaStore, PineconeStore
-from picachain.embedding import ClipEmbedding
-from picachain.retriever import ImageRetriever
-```
-
-```python
-img = Image.open("image.png") # query image
-images = [...] # list of images
-```
+![image](https://github.com/pica-labs/picachain/assets/136924835/57c400e7-3615-4775-b3aa-c2c211307ef0)
+*Fig: Image Search Engine Overview*
 
 ```python
 # initiate embedding, datastore and retriever
@@ -57,11 +43,16 @@ retriever = ImageRetriever(datastore, embedding, images)
 img_chain = ImageSearchChain.from_image(retriever, embedding, img)
 result = img_chain.similar_images(top_k=3)
 
-for img, score in result: # [(img, score), (img, score)]
-    plt.imshow(img)
-    plt.show()
-
+## Output 
+# [(img, score), (img, score)]
 ```
+### Conversation with Charts/Graphs
+
+Create a conversation chain and ask questions from chart/graph images.
+
+![image](https://github.com/pica-labs/picachain/assets/136924835/a30c6969-98ee-43ac-beed-5425487aa95b)
+*Fig: Conversation chain for Q&A with charts/graphs*
+
 
 ### Build Chart Conversation Chain
 
