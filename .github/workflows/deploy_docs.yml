@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
           cache: npm
           cache-dependency-path: docs/package-lock.json
 
@@ -57,7 +57,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
-    
+
     defaults:
       run:
        working-directory: docs
