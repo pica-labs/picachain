@@ -2,7 +2,7 @@ name: Deploy documentation to Github pages
 
 on:
   # Runs on pushes targeting the default branch
-  push:
+  pull_request:
     branches: [main]
 
   # To run workflow manually
