@@ -8,7 +8,7 @@ from PIL.Image import Image
 from pinecone import Index, Pinecone, PodSpec, ServerlessSpec
 
 from picachain.datastore import DataStore
-from picachain.embedding.embedding import Embedding
+from picachain.embedding.base import Embedding
 
 
 class PineconeStore(DataStore):

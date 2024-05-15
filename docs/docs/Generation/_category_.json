@@ -1,0 +1,8 @@
+{
+  "label": "Generation",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "A quick guide on building image generation chain with picachain."
+  }
+}

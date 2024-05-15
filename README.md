@@ -46,6 +46,9 @@ result = img_chain.similar_images(top_k=3)
 ## Output 
 # [(img, score), (img, score)]
 ```
+![sample](https://private-user-images.githubusercontent.com/136924835/310149251-19637f25-bc5f-4a90-982e-24efe6109a22.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTU2NzM0MTAsIm5iZiI6MTcxNTY3MzExMCwicGF0aCI6Ii8xMzY5MjQ4MzUvMzEwMTQ5MjUxLTE5NjM3ZjI1LWJjNWYtNGE5MC05ODJlLTI0ZWZlNjEwOWEyMi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwNTE0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDUxNFQwNzUxNTBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1jMGQxNzhjNTE3NTgxM2M2YTVlZGQyYTIwMWQ1ZTQxNWIwOWVjZDU2MDY1N2JhMGM0NGI4ODNiN2Y3ZDdhZGVkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.VYNaG734Czjsa5NdmJGo6O_FGhFtdEnUULyaBDm4oV4)
+*Fig: Demo*
+
 ### Conversation with Charts/Graphs
 
 Create a conversation chain and ask questions from chart/graph images.
@@ -53,22 +56,7 @@ Create a conversation chain and ask questions from chart/graph images.
 ![image](https://github.com/pica-labs/picachain/assets/136924835/a30c6969-98ee-43ac-beed-5425487aa95b)
 *Fig: Conversation chain for Q&A with charts/graphs*
 
-
-### Build Chart Conversation Chain
-
-```python
-from dotenv import load_dotenv
-from picachain.chains.unstructured.charts import ChartConversationChain
-from picachain.models.openai.openai import OpenAI_Model
-load_dotenv()
-```
-```pyhton
-chart_conv_chain = ChartConversationChain(
-    chart="/home/home/dev/picachain/data/chart1.png", llm=OpenAI_Model()
-)
-response = chart_conv_chain.run(query="What do I eat?")
-print(response)
-```
+Check out the example notebook under [examples](/examples/chart_conversation_chain.ipynb) directory.
 
 ## 💡 Contributing
 As an open-source project, we are open to all kinds of contribution, be it through code, documentation, issues, bugs, or even feature suggestions. 
