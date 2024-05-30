@@ -28,6 +28,7 @@ pillow = "10.3.0"
 pinecone-client = "^3.2.1"
 pysqlite3-binary = "^0.5.2.post3"
 python = "^3.10"
+opencv-python = "^4.9.0.80"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.4"

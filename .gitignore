@@ -169,3 +169,6 @@ data
 
 # testing files
 main.py 
+
+# additional files to skip
+.resource
