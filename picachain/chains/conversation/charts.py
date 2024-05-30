@@ -1,24 +1,22 @@
 import os
-from typing import Union
+from typing import List, Union
 
 from PIL import Image
 
 from picachain.chains.base import Chain
 from picachain.models.openai.openai import OpenAI_Model
+from picachain.structures import Document
 from picachain.unstructured.charts import Chart, ChartParser
 
 
 class ChartConversationChain(Chain):
-    def __init__(self, chart: Union[Image.Image, os.PathLike]) -> None:
+    def __init__(self, charts: List[Document], llm: Union[OpenAI_Model]) -> None:
         super().__init__()
-        self.chart = chart
-
-    def get_chart_content(self):
-        return str(ChartParser.from_image(self.chart).content)
+        self.charts = charts
+        self.llm = llm
 
     def run(self, query: str):
-        self.llm = OpenAI_Model()
-        self.chart_content = self.get_chart_content()
+        self.chart_content = "\n".join([doc.content for doc in self.charts])
         self.messages = [
             {
                 "role": "system",

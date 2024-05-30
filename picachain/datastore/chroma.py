@@ -12,100 +12,131 @@ import chromadb
 import numpy as np
 from chromadb import Collection
 from PIL.Image import Image
+from tqdm import tqdm
 
-from picachain.embedding import Embedding
-from picachain.utils.image_util import base64_to_image
+from picachain.datastore.base import DataStore
+from picachain.structures import Document
+from picachain.utils.image_util import base64_to_image, image_to_base64
 
 
-class ChromaStore:
+class ChromaStore(DataStore):
+    """Chroma DB class"""
+
+    collection_index: Collection
+
     def __init__(
         self,
-        collection_name: str,
         storage_path: str = "./chroma",
-        database: str = "database",
         metadata: dict = {"hnsw:space": "cosine"},
     ) -> None:
-        """Initiate Chromadb
-        - collection_name(str): name of the collection
+        """
+        - storage_path (str)
+        - database
         - metadata(dict): available options for 'hnsw:space' are 'l2', 'ip' or 'cosine'.
         """
 
-        self.collection_name = collection_name
         self.metadata = metadata
-        self.storage_path = storage_path
-        self.database = database
 
-        self.client = chromadb.PersistentClient()
+        self.client = chromadb.PersistentClient(
+            path=storage_path,
+        )
 
-    def _health_check(self) -> bool:
+    def health_check(self) -> bool:
         return isinstance(self.client.heartbeat(), int)
 
-    def generate_embeddings(
-        self, images: List[Image], embedding: Embedding
-    ) -> np.ndarray:
-        return embedding.encode_images(images)
+    def list_collections(self) -> List[str]:
+        """Get the list of created collections."""
+        return [col.name for col in self.client.list_collections()]
 
-    def create(self):
-        collection = self.client.get_or_create_collection(
-            name=self.collection_name,
-        )
-        return collection
+    def create(self, collection_name: str) -> Collection:
+        """Create data collection
+
+        Returns:
+        - success (bool)
+        """
+        try:
+            self.collection_index = self.client.get_or_create_collection(
+                name=collection_name,
+                metadata=self.metadata,
+            )
+            return True
+        except Exception as e:
+            raise KeyError(f"Collection {self.collection_name} not found: {e}")
+
+    def _proces_documents(self, documents: List[Document]):
+        return [
+            Document(content=image_to_base64(doc.content), metadata=doc.metadata)
+            for doc in documents
+        ]
 
     def add(
         self,
-        collection: Collection,
+        documents: List[Document],
         embeddings: List[float],
-        documents: List[str],
-        ids: List[str],
     ):
-        """Add embeddings, documents to index or collection.
+        """Ingest documents to database.
 
         Args:
-        - collection: created collection.
-        - embeddings: list of image embeddings
-        - documents: list of base64 string of images
-        - ids: list of ids for images."""
+        - documents(list): list of documents to be added.
+        - embeddings (list): embeddings for respective document
+
+        Returns:
+        - success (bool)
+        """
         try:
-            collection.add(
+            _ids = []
+            _documents = []
+            _metadatas = []
+            for doc in tqdm(documents, desc="Adding documents"):
+                _ids.append(doc.metadata["id"])
+                _metadatas.append(doc.metadata)
+                _documents.append(doc.content)
+
+            self.collection_index.add(
                 embeddings=embeddings,
-                ids=ids,
-                documents=documents,
+                ids=_ids,
+                documents=_documents,
+                metadatas=_metadatas,
             )
+            return True
         except Exception as e:
             raise Exception(f"Failed to add documents to Chroma store. {e}")
 
     def query(
         self,
-        collection: Collection,
         query_embedding: List[float],
         top_k: int = 3,
     ) -> list:
-        """Retrieve relevant images from chroma database.
+        """Retrieve relevant documents from chroma database
 
         Args:
-        - collection: created collection.
-        - query_embedding: query image embedding.
-        - top_k (int): top k images to retrieve.
+        - collection: created collection
+        - query_embedding: query document embedding
+        - top_k (int): top k documents to retrieve
 
         Returns:
-        - list of images along with their score.
+        - relevant documents
         """
-        result = collection.query(query_embeddings=query_embedding, n_results=top_k)
-        relevant_images = [
-            base64_to_image(img_str) for img_str in result["documents"][0]
-        ]
-        scores = [round(score, 3) for score in result["distances"][0]]
-        return list(zip(relevant_images, scores))
+        try:
+            result = self.collection_index.query(
+                query_embeddings=query_embedding,
+                n_results=top_k,
+            )
+            return result
+        except Exception as e:
+            raise FileNotFoundError(f"Failed to query relevant results. {e}")
 
     def delete(self, collection_name: str):
-        try:
+        if collection_name not in self.list_collections():
+            return f"No collection found with name: {collection_name}"
+        else:
             self.client.delete_collection(collection_name)
             return True
-        except Exception as e:
-            raise Exception("Failed to delete collection", e)
 
-    @staticmethod
-    def collection_info(collection: Collection):
+    @property
+    def collection(self):
         info = defaultdict(str)
-        info["count"] = collection.count()
-        info["top_10_items"] = collection.peek()
+        info["name"] = self.collection_index.name
+        info["count"] = self.collection_index.count()
+        info["top_10_items"] = self.collection_index.peek()
+        return info

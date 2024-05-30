@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Union
 
 import numpy as np
 from PIL import Image
 
 from picachain.embedding.base import Embedding
+from picachain.structures import Document
 
 
 class ClipEmbedding(Embedding):
@@ -28,13 +29,13 @@ class ClipEmbedding(Embedding):
         self.model.save_pretrained(path)
         self.processor.save_pretrained(path)
 
-    def encode_image(self, image: Image.Image):
+    def encode_image(self, image: Document):
         raise NotImplementedError
 
     def encode_text(self, text: str):
         raise NotImplementedError
 
-    def encode_images(self, images: List[Image.Image]) -> np.ndarray:
+    def encode_images(self, images: List[Union[Document, Image.Image]]) -> np.ndarray:
         """
         Encode a list of images using the clip model.
 
@@ -44,6 +45,10 @@ class ClipEmbedding(Embedding):
         Returns:
         - numpy.ndarray: An array of image embeddings of shape (len(images), 512).
         """
+
+        if isinstance(images[0], Document):
+            images = [doc.content for doc in images]
+
         image = self.processor(text=None, images=images, return_tensors="pt")[
             "pixel_values"
         ].to(self.device)

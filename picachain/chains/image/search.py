@@ -2,55 +2,47 @@ from typing import Any, List, Union
 
 from PIL import Image
 
-from picachain.embedding import Embedding
+from picachain.datastore import DataStore
+from picachain.embedding import ClipEmbedding, Embedding
 from picachain.retriever import ImageRetriever
 
 
 class ImageSearchChain:
-    def __init__(
-        self,
-        retriever: ImageRetriever,
-        embedding: Embedding,
-        image: Union[Image.Image, List[float]],
-    ):
-        self.retriever = retriever
-        self.embedding = embedding
-        self.image = image
+    query: Union[Image.Image, str]
+    datastore: DataStore
+    embedding: Union[Embedding, ClipEmbedding]
+    top_k: int = 3
+
+    def _encode_query_image(self, image: Union[Image.Image, List[float]]):
+        query_embedding = None
+        if isinstance(image, Image.Image):
+            query_embedding = self.embedding.encode_images([image])
+        if isinstance(image, float):
+            query_embedding = image
+        return query_embedding
 
     @classmethod
     def from_image(
         cls,
-        retriever: ImageRetriever,
-        embedding: Embedding,
-        image: Image,
-    ):
-        image_embedding = cls._encode_image(embedding, image)
-
-        return cls(
-            retriever=retriever,
-            embedding=embedding,
-            image=image_embedding,
-        )
-
-    @classmethod
-    def from_image_embedding(
-        cls,
-        retriever: ImageRetriever,
-        embedding: Embedding,
-        image_embedding: List[float],
+        image: Image.Image,
+        datastore: DataStore,
+        embedding: Union[Embedding, ClipEmbedding],
+        top_k: int = 3,
     ):
         return cls(
-            retriever=retriever,
+            query=image,
+            datastore=datastore,
             embedding=embedding,
-            image=image_embedding,
-        )
-
-    def similar_images(self, top_k: int = 3):
-        return self.retriever.relevant_images(
-            query_embedding=self.image,
             top_k=top_k,
         )
 
-    @staticmethod
-    def _encode_image(embedding: Embedding, image: Image.Image) -> List[float]:
-        return embedding.encode_images([image]).tolist()
+    def run(self):
+        try:
+            _query_embedding = self._encode_query_image(self.query)
+            result = self.datastore.query(
+                _query_embedding,
+                self.top_k,
+            )
+            return result
+        except Exception as e:
+            raise Exception(f"{e}")
