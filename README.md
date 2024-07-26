@@ -27,7 +27,7 @@ pip install picachain
 
 ## 🥇 Example Usage
 
-### Build a quick image search engine
+### Image search engine
 
 Use **ChromaDB** or **Pinecone** for storage with **CLIP** embeddings.
 Check out a demo [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1FbruIGMBrD7VW5jCHStHzGlsEuigbS0q?usp=sharing)
@@ -35,17 +35,6 @@ Check out a demo [![Open In Colab](https://colab.research.google.com/assets/cola
 ![image](https://github.com/pica-labs/picachain/assets/136924835/57c400e7-3615-4775-b3aa-c2c211307ef0)
 *Fig: Image Search Engine Overview*
 
-```python
-# initiate embedding, datastore and retriever
-embedding = ClipEmbedding()
-datastore = ChromaStore("test-collection")
-retriever = ImageRetriever(datastore, embedding, images)
-img_chain = ImageSearchChain.from_image(retriever, embedding, img)
-result = img_chain.similar_images(top_k=3)
-
-## Output 
-# [(img, score), (img, score)]
-```
 ![sample](https://github.com/pica-labs/picachain/assets/136924835/e7c3f77e-dc28-4c2f-b026-e13453c0fcc9)
 *Fig: Demo*
 
